@@ -1,2 +1,2 @@
 # d3jspractice
-Testing different applications for d3.js
+A basic d3.js line graph for proof of concept
