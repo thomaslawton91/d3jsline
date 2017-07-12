@@ -1,0 +1,23 @@
+{
+  "name": "d3js",
+  "version": "1.0.0",
+  "description": "Testing different applications for d3.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thomaslawton91/d3jspractice.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/thomaslawton91/d3jspractice/issues"
+  },
+  "homepage": "https://github.com/thomaslawton91/d3jspractice#readme",
+  "dependencies": {
+    "d3-scale": "^1.0.6",
+    "d3-time-format": "^2.0.5"
+  }
+}
