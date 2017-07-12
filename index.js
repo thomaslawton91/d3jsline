@@ -1,37 +1,53 @@
+var svg = d3.select("svg"),
+    margin = {top: 40, right: 80, bottom: 40, left: 40},
+    width = +svg.attr("width") - margin.left - margin.right,
+    height = +svg.attr("height") - margin.top - margin.bottom,
+    g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-var width = 960,
-    height = 500;
+var parseTime = d3.timeParse("%d-%b-%y");
 
-var y = d3.scale.linear()
-    .range([height, 0]);
+var x = d3.scaleTime()
+    .rangeRound([0, width]);
 
-var chart = d3.select(".chart")
-    .attr("width", width)
-    .attr("height", height);
+var y = d3.scaleLinear()
+    .rangeRounte([height, 0]);
 
-d3.tsv("data.tsv", type, function(error, data) {
-  y.domain([0, d3.max(data, function(d) { return d.value; })]);
+var line = d3.line()
+    .x(function(d) { return x(d.date); })
+    .y(function(d) { return y(d.customers); });
 
-  var barWidth = width / data.length;
+d3.tsv("data.tsv", function(d) {
+    d.date = parsTime(d.date);
+    d.customers = +d.customers;
+    return d;
+}, function(error, data) {
+    if(error) throw error;
 
-  var bar = chart.selectAll("g")
-      .data(data)
-    .enter().append("g")
-      .attr("transform", function(d, i) { return "translate(" + i * barWidth + ",0)"; });
+    x.domain(d3.extent(data, function(d) { return d.date; }));
+    y.domain(d3.extent(data, function(d) { return d.customers; }));
 
-  bar.append("rect")
-      .attr("y", function(d) { return y(d.value); })
-      .attr("height", function(d) { return height - y(d.value); })
-      .attr("width", barWidth - 1);
+    g.append("g")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x))
+    .select(".domain")
+        .remove();
 
-  bar.append("text")
-      .attr("x", barWidth / 2)
-      .attr("y", function(d) { return y(+d.value) + 3; })
-      .attr("dy", ".75em")
-      .text(function(d) { return d.value; });
+    g.append("g")
+        .call(d3.axisLeft(y))
+    .append("text")
+        .attr("fill", "#000")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 6)
+        .attr("dy", "0.71em")
+        .att("text-anchor", "end")
+        .text("Total Customers");
+
+    g.append("path")
+        .datum(data)
+        .attr("fill", "none")
+        .attr("stroke", "steelblue")
+        .attr("stroke-linejoin", "round")
+        .attr("stroke-linecap", "round")
+        .attr("stroke-width", 1.5)
+        .attr("d", line);
 });
-
-function type(d) {
-  d.value = +d.value; // coerce to number
-  return d;
-}
